@@ -43,7 +43,7 @@ $mahasiswa = query("SELECT * FROM mahasiswa");
                 <td><?= $row["jurusan"] ?></td>
                 <td>
                     <a href="hapus.php?id=<?= $row["id"] ?>" onclick="return confirm('Yakin Ingin Menghapus')">Hapus</a> |
-                    <a href="">Update</a>
+                    <a href="ubah.php?id=<?= $row["id"] ?>">Ubah</a>
                 </td>
                 <?php $i++ ?>
             </tr>
