@@ -73,10 +73,17 @@ function upload()
         return false;
     }
 
-    // File lolos dan siap diupload
-    move_uploaded_file($tempName, 'img/' . $namaFile);
+    // Generate nama File Baru agar jika ada nama file yang sama tidak menimpa file yang lama
+    $namaFileBaru = uniqid();
+    $namaFileBaru .= ".";
+    $namaFileBaru .= $ekstensiFile;
 
-    return $namaFile;
+
+
+    // File lolos dan siap diupload
+    move_uploaded_file($tempName, 'img/' . $namaFileBaru);
+
+    return $namaFileBaru;
 }
 
 function hapus($id)
