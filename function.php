@@ -22,12 +22,61 @@ function tambah($data)
     $nim = htmlspecialchars($data["nim"]);
     $email = htmlspecialchars($data["email"]);
     $jurusan = htmlspecialchars($data["jurusan"]);
+    $foto = upload();
 
-    $query = "INSERT INTO mahasiswa VALUES ('', '$nama', '$nim', '$email', '$jurusan')";
+    if ($foto === false) {
+        return false;
+    }
+
+    $query = "INSERT INTO mahasiswa VALUES ('','$foto', '$nama', '$nim', '$email', '$jurusan')";
 
     mysqli_query($conn, $query);
 
     return mysqli_affected_rows($conn);
+}
+
+function upload()
+{
+    // Ambil file dari form
+    $namaFile = $_FILES['foto']['name'];
+    $ukuranFile = $_FILES['foto']['size'];
+    $error = $_FILES['foto']['error'];
+    $tempName = $_FILES['foto']['tmp_name'];
+
+    //Cek apakah user mengupload gambar
+    if ($error === 4) {
+        echo "<script>
+            alert('Pilih Gambar Terlebih Dahulu')    
+            </script>";
+
+        return false;
+    }
+
+    // Cek apakah user mengupload gambar atau bukan dari ekstensi file yang dipuload
+    $ekstensiFileValid = ['jpg', 'jpeg', 'png']; // Menentukan ektensi file yang dapat diupload
+    $ekstensiFile = explode('.', $namaFile); // Untuk memecah string(nama file) menjadi aray
+    $ekstensiFile = strtolower(end($ekstensiFile)); // mengambil aray yang paling terkahir dan dirubah menjadi lower dari nama file
+
+    // Cek ekstensi file
+    if (in_array($ekstensiFile, $ekstensiFileValid) === false) {
+        echo "<script>
+            alert('File Yang Dipilih Harus Format jpg, jpeg, png')    
+            </script>";
+        return false;
+    }
+
+    // Cek Ukuran File
+    if ($ukuranFile > 1000000) {
+        echo "<script>
+            alert('Ukuran File Terlalu Besar, Ukuran File Harus Dibawah 1MB')    
+            </script>";
+        return false;
+    }
+
+    // File lolos dan siap diupload
+    move_uploaded_file($tempName, 'img/' . $namaFile);
+
+    return $namaFile;
 }
 
 function hapus($id)
@@ -46,8 +95,18 @@ function ubah($data)
     $nim = htmlspecialchars($data["nim"]);
     $email = htmlspecialchars($data["email"]);
     $jurusan = htmlspecialchars($data["jurusan"]);
+    $fotoLama = $data["fotoLama"];
 
-    $query = "UPDATE mahasiswa SET nama='$nama', nim='$nim', email='$email', jurusan='$jurusan' WHERE id=$id";
+    // Cek apakah user upload foto baru atau tidak
+    if ($_FILES['foto']['error'] === 4) {
+        $foto = $fotoLama;
+    } else {
+        $foto = upload();
+    }
+
+
+
+    $query = "UPDATE mahasiswa SET nama='$nama', nim='$nim', email='$email', jurusan='$jurusan', foto='$foto' WHERE id=$id";
 
     mysqli_query($conn, $query);
 

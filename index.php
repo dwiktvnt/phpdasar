@@ -35,6 +35,7 @@ if (isset($_POST["cari"])) {
     <table border="1" cellpadding="10" cellspacing="0">
         <tr>
             <th>No.</th>
+            <th>Foto Mahasiswa</th>
             <th>Nama Mahasiswa</th>
             <th>NIM</th>
             <th>Email</th>
@@ -46,6 +47,7 @@ if (isset($_POST["cari"])) {
         <?php foreach ($mahasiswa as $row) : ?>
             <tr>
                 <td><?= $i; ?></td>
+                <td><img src="img/<?= $row["foto"] ?>" alt=""></td>
                 <td><?= $row["nama"] ?></td>
                 <td><?= $row["nim"] ?></td>
                 <td><?= $row["email"] ?></td>
