@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit;
+}
 
 require 'function.php';
 
@@ -60,7 +66,7 @@ if (isset($_POST["cari"])) {
             </tr>
         <?php endforeach ?>
     </table>
-
+    <p><a href="logout.php">Logout</a></p>
 </body>
 
 </html>

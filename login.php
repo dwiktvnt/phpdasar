@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (isset($_SESSION["login"])) {
+    header("Location: index.php");
+    exit;
+}
 
 require 'function.php';
 
@@ -16,6 +21,9 @@ if (isset($_POST["login"])) {
         //Cek password
         $row = mysqli_fetch_assoc($result);
         if (password_verify($password, $row['password'])) {
+
+            //Set session
+            $_SESSION["login"] = true;
             header("Location: index.php");
         }
     }
@@ -38,7 +46,7 @@ if (isset($_POST["login"])) {
     <h1>Login Admin</h1>
 
     <?php if (isset($error)) : ?>
-        <h3 style="color: red; font-stylr: italic;">Password/Username Salah</h3>
+        <h3 style="color: red; font-style: italic;">Password/Username Salah</h3>
     <?php endif; ?>
     <form action="" method="post">
         <table>
