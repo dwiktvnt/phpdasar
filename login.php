@@ -1,11 +1,24 @@
 <?php
 session_start();
+require 'function.php';
+//cek cookie
+if (isset($_COOKIE['id']) && isset($_COOKIE['key'])) {
+    $id = $_COOKIE['id'];
+    $key = $_COOKIE['key'];
+
+    $result = mysqli_query($conn, "SELECT username FROM user WHERE id = $id");
+    $row = mysqli_fetch_assoc($result);
+
+    //cek cookie dan username
+    if ($key === hash('sha256', $row['username'])) {
+        $_SESSION['login'] = true;
+    }
+}
+
 if (isset($_SESSION["login"])) {
     header("Location: index.php");
     exit;
 }
-
-require 'function.php';
 
 if (isset($_POST["login"])) {
 
@@ -24,6 +37,13 @@ if (isset($_POST["login"])) {
 
             //Set session
             $_SESSION["login"] = true;
+
+            //cek cookie (remember me)
+            if (isset($_POST["remember"])) {
+                //set cookie
+                setcookie('id', $row['id'], time() + 60);
+                setcookie('key', hash('sha256', $row['username']), time() + 60);
+            }
             header("Location: index.php");
         }
     }
@@ -58,7 +78,9 @@ if (isset($_POST["login"])) {
                 <td><label for="password">Password</label></td>
                 <td><input type="password" name="password" id="password"></td>
             </tr>
-        </table>
+        </table><br>
+        <input type="checkbox" name="remember" id="remember">
+        <label for="remember">Ingat Saya</label><br><br>
         <button type="submit" name="login">Login</button>
     </form>
 
